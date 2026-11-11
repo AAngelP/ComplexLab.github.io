@@ -1,0 +1,265 @@
+:root {
+    /* Degradado Azul Profundo y Oscuro */
+    --gradiente-principal: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    --gradiente-hover: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+    --color-texto: #ffffff;
+    --color-oscuro: #020617;
+    --azul-acento: #38bdf8;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background: black;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* HEADER */
+header {
+    background: var(--gradiente-principal);
+    width: 100%;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+nav {
+    width: 100%;
+    min-height: 70px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 2rem;
+    gap: 20px;
+}
+
+.logo {
+    color: white;
+    font-size: 1.5rem;
+    font-weight: bold;
+    white-space: nowrap;
+    letter-spacing: 1px;
+}
+
+/* LINKS */
+.nav-links {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    gap: 10px;
+    flex-wrap: nowrap;
+}
+
+.nav-links li {
+    position: relative;
+}
+
+.nav-links a {
+    color: var(--color-texto);
+    text-decoration: none;
+    padding: 10px 14px;
+    border-radius: 8px;
+    transition: 0.3s;
+    display: block;
+    white-space: nowrap;
+    font-weight: 500;
+}
+
+.nav-links a:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--azul-acento);
+}
+
+.login-btn {
+    border: 1px solid var(--azul-acento);
+    color: var(--azul-acento) !important;
+}
+
+.login-btn:hover {
+    background: var(--azul-acento) !important;
+    color: white !important;
+}
+
+/* DROPDOWN */
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: #1e293b; /* Fondo oscuro a juego */
+    min-width: 220px;
+    border-radius: 0 0 10px 10px;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+.dropdown-menu a {
+    color: white !important;
+    padding: 12px 20px;
+    font-size: 0.95rem;
+}
+
+.dropdown-menu a:hover {
+    background: var(--gradiente-hover);
+    color: var(--azul-acento) !important;
+}
+
+/* HERO */
+.hero {
+    position: relative;
+    width: 100%;
+    height: calc(100vh - 70px);
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.fondo-animado {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: none;
+    inset: 0;
+    z-index: 1;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    color: white;
+    background: rgba(15, 23, 42, 0.6); /* Azul muy oscuro traslúcido */
+    padding: 40px;
+    border-radius: 20px;
+    backdrop-filter: blur(12px);
+    width: min(90%, 800px);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.hero h1 {
+    font-size: clamp(2rem, 5vw, 4rem);
+    margin-bottom: 20px;
+    background: linear-gradient(to right, #ffffff, #38bdf8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.hero p {
+    font-size: clamp(1rem, 2vw, 1.3rem);
+    line-height: 1.6;
+    color: #cbd5e1;
+}
+
+/* MAIN CONTENT (PARA LAS TARJETAS) */
+#main-content {
+    width: 100%;
+    min-height: 100vh;
+    background: black;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media(max-width: 950px) {
+    nav {
+        flex-direction: column;
+        padding: 15px;
+    }
+    .nav-links {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    .hero {
+        height: auto;
+        min-height: calc(100vh - 70px);
+        padding: 60px 20px;
+    }
+}
+
+@media(max-width: 600px) {
+    .nav-links {
+        flex-direction: column;
+        align-items: center;
+    }
+    .nav-links li, .nav-links a {
+        width: 100%;
+        text-align: center;
+    }
+}
+.hero{
+
+position:relative;
+
+overflow:hidden;
+
+min-height:100vh;
+
+}
+
+
+.fondo-animado{
+
+position:absolute;
+
+top:0;
+
+left:0;
+
+width:100%;
+
+height:100%;
+
+border:none;
+
+z-index:1;
+
+}
+
+
+.hero-content{
+
+position:relative;
+
+z-index:2;
+
+width:100%;
+
+padding:20px;
+
+}
+
+
+
+
+/* =========================================================
+   REPARACIÓN DE SCROLL PARA ELEMENTOS DINÁMICOS
+========================================================= */
+
+/* Cuando haya un examen o teoría abierta dentro de hero, liberamos el contenedor */
+.hero:has(.pantalla-detalle-tema:not(.oculto)) {
+    height: auto !important;
+    min-height: calc(100vh - 70px);
+    overflow: visible !important;
+}
+
+/* Permitimos que el recuadro traslúcido crezca a lo ancho y alto si es necesario */
+.hero:has(.pantalla-detalle-tema:not(.oculto)) .hero-content {
+    width: min(95%, 1200px) !important; /* Le da más espacio al examen en monitores grandes */
+    height: auto !important;
+    margin: 40px auto;
+}

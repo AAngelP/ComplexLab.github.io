@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ComplexLab</title>
+
+    <link rel="stylesheet" href="./CSS/principalcss.css">
+    <link rel="stylesheet" href="./CSS/simulacionescss.css">
+</head>
+
+<body>
+
+<header>
+    <nav>
+        <!-- Logo con ID y cursor pointer para habilitar el regreso al inicio -->
+        <div class="logo" id="btn-inicio" style="cursor: pointer;">ComplexLab</div>
+        <ul class="nav-links">
+            <li><a href="#">Sobre Nosotros</a></li>
+            <li><a href="#" id="btn-simulaciones">Simulaciones</a></li>
+            <li class="dropdown">
+                <a href="#" id="teoriaBtn">Teoría ▾</a>
+                <ul class="dropdown-menu">
+                    <!-- Agregado id para capturar el click -->
+                    <li><a href="#" id="btn-variable-compleja">Variable Compleja</a></li>
+                </ul>
+            </li>
+            <li><a href="#">Mis Simulaciones</a></li>
+            <li><a href="#" class="login-btn">Iniciar Sesión</a></li>
+        </ul>
+    </nav>
+</header>
+
+<main id="main-content">
+    <section class="hero">
+        <!-- Fondo desde servidor -->
+        <iframe id="frame-fondo" class="fondo-animado"></iframe>
+
+        <div class="hero-content">
+            <h1>Explora la Variable Compleja</h1>
+            <p>
+                Aprende, visualiza y domina los conceptos avanzados
+                de variable compleja mediante simulaciones interactivas.
+            </p>
+        </div>
+    </section>
+</main>
+
+<script src="./JS/scriptprincipal.js"></script>
+<!-- Autenticación entregada mediante la API REST -->
+<script src="http://localhost:5000/api/scripts/auth"></script>
+
+</body>
+</html>
+
