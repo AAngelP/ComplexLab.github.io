@@ -6,7 +6,7 @@
 (() => {
     'use strict';
 
-    const API = 'http://localhost:5000';
+    const API = 'https://complexlab-web.onrender.com';
 
     let plantillaOriginalHeroContent = '';
     let clasesOriginalesHero = 'hero';
