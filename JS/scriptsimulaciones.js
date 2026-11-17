@@ -32,7 +32,7 @@ try{
 
 const respuesta=
 await fetch(
-'http://localhost:5000/api/simulaciones'
+'https://onrender.com'
 );
 
 
@@ -116,7 +116,7 @@ window.irASimulacion = async (event, urlEndpoint) => {
     const heroContent = document.querySelector('.hero-content');
     
     try {
-        const respuesta = await fetch(`http://localhost:5000${urlEndpoint}`);
+        const respuesta = await fetch(`https://complexlab-web.onrender.com${urlEndpoint}`);
         const datos = await respuesta.json();
         
         // Inyecta el iframe de forma estándar en el espacio de trabajo actual
