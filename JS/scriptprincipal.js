@@ -6,9 +6,12 @@
 (() => {
     'use strict';
 
-    const API = 'https://complexlab-web.onrender.com';
+    // API REST desplegada en Render. Puede sobrescribirse antes de cargar este archivo.
+    const API = (window.COMPLEXLAB_API_URL || 'https://complexlab-servidor.onrender.com')
+        .replace(/\/+$/, '');
 
     let plantillaOriginalHeroContent = '';
+    let plantillaHeroCompleta = '';
     let clasesOriginalesHero = 'hero';
     let navegacionInicializada = false;
 
@@ -32,11 +35,14 @@
     function normalizarUrl(url) {
         if (!url) return '';
 
-        if (url.startsWith('http://') || url.startsWith('https://')) {
-            return url;
+        try {
+            // Las rutas relativas devueltas por Render deben resolverse contra la API,
+            // no contra el dominio de GitHub Pages.
+            return new URL(url, `${API}/`).href;
+        } catch (error) {
+            console.error('URL de recurso no válida:', url, error);
+            return '';
         }
-
-        return `${API}${url.startsWith('/') ? '' : '/'}${url}`;
     }
 
     function cargarCSS(id, url) {
@@ -59,7 +65,8 @@
             'css-dinamico',
             'css-simulaciones',
             'css-sobrenosotros',
-            'css-autenticacion'
+            'css-autenticacion',
+            'css-mi-progreso'
         ].forEach(id => {
             document.getElementById(id)?.remove();
         });
@@ -69,7 +76,23 @@
        PREPARAR CONTENEDOR PARA LAS VISTAS
        ===================================================== */
 
+    /* auth.js reemplaza todo <main> al abrir login/registro/mi progreso,
+       y con eso desaparecen .hero y .hero-content. Si faltan, se
+       reconstruyen desde la plantilla guardada al iniciar. */
+    function asegurarHero() {
+        if (obtenerHero() && obtenerHeroContent()) return true;
+
+        const main = document.getElementById('main-content');
+        if (!main || !plantillaHeroCompleta) return false;
+
+        main.innerHTML = plantillaHeroCompleta;
+        cargarConfiguracion();
+        return true;
+    }
+
     function prepararContenedor(claseModo = '') {
+        asegurarHero();
+
         const hero = obtenerHero();
         const contenido = obtenerHeroContent();
 
@@ -106,8 +129,9 @@
                 scriptNuevo.setAttribute(atributo.name, atributo.value);
             });
 
-            if (scriptAnterior.src) {
-                scriptNuevo.src = scriptAnterior.src;
+            if (scriptAnterior.getAttribute('src')) {
+                scriptNuevo.src = normalizarUrl(scriptAnterior.getAttribute('src'));
+                if (!scriptNuevo.src) continue;
 
                 await new Promise((resolve, reject) => {
                     scriptNuevo.onload = resolve;
@@ -130,14 +154,31 @@
        ===================================================== */
 
     async function solicitarVista(endpoint) {
-        const respuesta = await fetch(`${API}${endpoint}`, {
+        const url = normalizarUrl(endpoint);
+
+        if (!url) {
+            throw new Error('No se pudo construir la URL de la API.');
+        }
+
+        const respuesta = await fetch(url, {
             method: 'GET',
-            cache: 'no-store'
+            cache: 'no-store',
+            headers: {
+                'Accept': 'application/json'
+            }
         });
 
         if (!respuesta.ok) {
             throw new Error(
-                `Error HTTP ${respuesta.status} al consultar ${endpoint}`
+                `Error HTTP ${respuesta.status} al consultar ${url}`
+            );
+        }
+
+        const tipoContenido = respuesta.headers.get('content-type') || '';
+        if (!tipoContenido.includes('application/json')) {
+            const contenido = await respuesta.text();
+            throw new Error(
+                `La API no devolvió JSON en ${url}. Respuesta: ${contenido.slice(0, 180)}`
             );
         }
 
@@ -172,7 +213,6 @@
             mostrarError('No se pudo cargar la sección Sobre Nosotros.');
         }
     }
-
     /* =====================================================
        MOSTRAR SIMULACIONES
        ===================================================== */
@@ -232,6 +272,45 @@
     }
 
     /* =====================================================
+       MOSTRAR MI PROGRESO
+       ===================================================== */
+
+    async function mostrarMiProgreso() {
+        const usuario = sessionStorage.getItem('complexlab_usuario');
+
+        if (!usuario) {
+            alert('Debes iniciar sesión para ver tu progreso.');
+            if (typeof abrirInicioSesion === 'function') {
+                abrirInicioSesion();
+            }
+            return;
+        }
+
+        try {
+            const datos = await solicitarVista('/api/mi-progreso');
+
+            if (!datos.html) {
+                throw new Error('La API no devolvió el HTML de Mi progreso.');
+            }
+
+            limpiarCSSDinamico();
+
+            const contenedores = prepararContenedor('modo-miprogreso');
+
+            if (!contenedores) return;
+
+            cargarCSS('css-mi-progreso', datos.cssUrl);
+
+            contenedores.contenido.innerHTML = datos.html;
+
+            await ejecutarScriptsVista(contenedores.contenido);
+        } catch (error) {
+            console.error('Error al cargar Mi progreso:', error);
+            mostrarError('No se pudo cargar la sección de Mi progreso.');
+        }
+    }
+
+    /* =====================================================
        RESTAURAR LA PÁGINA DE INICIO
        ===================================================== */
 
@@ -275,6 +354,7 @@
        ===================================================== */
 
     function mostrarError(mensaje) {
+        asegurarHero();
         const contenido = obtenerHeroContent();
 
         if (!contenido) return;
@@ -385,6 +465,16 @@
             ) {
                 event.preventDefault();
                 await mostrarVariableCompleja();
+                return;
+            }
+
+            /* Mi progreso */
+            if (
+                enlace.id === 'btn-mi-progreso' ||
+                texto === 'mi progreso'
+            ) {
+                event.preventDefault();
+                await mostrarMiProgreso();
             }
         });
 
@@ -412,6 +502,7 @@
 
         if (hero) {
             clasesOriginalesHero = hero.className || 'hero';
+            plantillaHeroCompleta = hero.outerHTML;
         }
 
         configurarNavegacion();
@@ -427,3 +518,4 @@
     }
 
 })();
+
