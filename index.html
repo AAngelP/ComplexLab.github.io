@@ -1,32 +1,30 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#10131c">
     <title>ComplexLab</title>
 
     <link rel="stylesheet" href="./CSS/principalcss.css">
     <link rel="stylesheet" href="./CSS/simulacionescss.css">
 </head>
-
 <body>
 
 <header>
     <nav>
-        <!-- Logo con ID y cursor pointer para habilitar el regreso al inicio -->
         <div class="logo" id="btn-inicio" style="cursor: pointer;">ComplexLab</div>
+
         <ul class="nav-links">
-            <li><a href="#">Sobre Nosotros</a></li>
+            <li><a href="#" id="btn-sobre-nosotros">Sobre Nosotros</a></li>
             <li><a href="#" id="btn-simulaciones">Simulaciones</a></li>
             <li class="dropdown">
                 <a href="#" id="teoriaBtn">Teoría ▾</a>
                 <ul class="dropdown-menu">
-                    <!-- Agregado id para capturar el click -->
                     <li><a href="#" id="btn-variable-compleja">Variable Compleja</a></li>
                 </ul>
             </li>
-            <li><a href="#">Mis Simulaciones</a></li>
+            <li><a href="#" id="btn-mi-progreso">Mi progreso</a></li>
             <li><a href="#" class="login-btn">Iniciar Sesión</a></li>
         </ul>
     </nav>
@@ -34,8 +32,7 @@
 
 <main id="main-content">
     <section class="hero">
-        <!-- Fondo desde servidor -->
-        <iframe id="frame-fondo" class="fondo-animado"></iframe>
+        <iframe id="frame-fondo" class="fondo-animado" title="Fondo animado"></iframe>
 
         <div class="hero-content">
             <h1>Explora la Variable Compleja</h1>
@@ -47,10 +44,16 @@
     </section>
 </main>
 
+<!-- Si en el futuro cambias de servidor, modifica COMPLEXLAB_API_URL aquí. -->
+<script>
+    window.COMPLEXLAB_API_URL = 'https://complexlab-servidor.onrender.com';
+</script>
+
+<!-- Navegación y carga de vistas desde la API REST -->
 <script src="./JS/scriptprincipal.js"></script>
-<!-- Autenticación entregada mediante la API REST -->
-<script src="http://localhost:5000/api/scripts/auth"></script>
+
+<!-- Autenticación servida por Render: no usar localhost -->
+<script src="https://complexlab-servidor.onrender.com/api/scripts/auth"></script>
 
 </body>
 </html>
-
